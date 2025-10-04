@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>West Chop Club - Tennis Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #e8f5e8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            color: #4ade80;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        button, .btn-link {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid #4ade80;
+            color: #4ade80;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover, .btn-link:hover {
+            background: #4ade80;
+            color: #0f1419;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .section h3 {
+            color: #4ade80;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h3::before {
+            content: "🎾";
+            font-size: 1.2rem;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(74, 222, 128, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background: rgba(74, 222, 128, 0.05);
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .player-name {
+            color: #e8f5e8;
+            font-weight: 500;
+        }
+
+        .no-items {
+            color: #ef4444;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 0.5rem;
+        }
+
+        .challenge-text {
+            color: #fbbf24;
+        }
+
+        .accepted-text {
+            color: #34d399;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button, .btn-link {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            li {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #4ade80, transparent);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome {{ username }}, Staff of West Chop Club!</h1>
+            <p class="subtitle">Official Tennis Ladderboard System</p>
+        </div>
+
+        <div class="button-group">
+            <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+                <button type="submit">🚪 Logout</button>
+            </form>
+            <a href="{{ url_for('ladderboard') }}" class="btn-link">🏆 View Ladderboard</a>
+            <a href="{{ url_for('match_history') }}" class="btn-link">📊 View Match History</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <h3>Pending Challenges</h3>
+            {% if pending_challenges %}
+                <ul>
+                    {% for challenger in pending_challenges %}
+                        <li>
+                            <span class="challenge-text">
+                                <strong class="player-name">{{ challenger[0] }}</strong> has challenged you!
+                            </span>
+                            <a href="{{ url_for('accept_challenge', challenger=challenger[0]) }}">
+                                <button>✅ Accept Challenge</button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="no-items">
+                    No new challenges at the moment.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h3>Ongoing Matches</h3>
+            {% if accepted_challenges %}
+                <ul>
+                    {% for challenger in accepted_challenges %}
+                        <li>
+                            <span class="accepted-text">
+                                <strong class="player-name">{{ challenger[0] }}</strong> (Match Accepted)
+                            </span>
+                            <a href="{{ url_for('submit_result', opponent=challenger[0]) }}">
+                                <button>📝 Submit Result</button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="no-items">
+                    No ongoing matches currently.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>West Chop Club - Tennis Ladderboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #e8f5e8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .back-button {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid #4ade80;
+            color: #4ade80;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: #4ade80;
+            color: #0f1419;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
+        }
+
+        h1 {
+            color: #4ade80;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        h1::before {
+            content: "🏆";
+            font-size: 2.5rem;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0f1419;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th:first-child {
+            border-radius: 0.5rem 0 0 0.5rem;
+        }
+
+        th:last-child {
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(74, 222, 128, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        tr:hover td {
+            background: rgba(74, 222, 128, 0.05);
+            border-color: rgba(74, 222, 128, 0.2);
+        }
+
+        .rank {
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 1.1rem;
+        }
+
+        .rank-1 {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .rank-2 {
+            color: #c0c0c0;
+            text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+        }
+
+        .rank-3 {
+            color: #cd7f32;
+            text-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+        }
+
+        .username {
+            font-weight: 600;
+            color: #e8f5e8;
+            font-size: 1.05rem;
+        }
+
+        .current-user {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        .stats {
+            font-weight: 500;
+        }
+
+        .wins {
+            color: #34d399;
+        }
+
+        .losses {
+            color: #f87171;
+        }
+
+        .points {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .challenge-btn {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid #4ade80;
+            color: #4ade80;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .challenge-btn:hover {
+            background: #4ade80;
+            color: #0f1419;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .no-action {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .medal {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .challenge-btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4ade80;
+            display: block;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{{ url_for('dashboard') }}" class="back-button">🏠 Back to Dashboard</a>
+            <h1>WCC Tennis Ladderboard</h1>
+        </div>
+
+        <div class="stats-summary">
+            <div class="stat-card">
+                <span class="stat-value">{{ ladderboard|length }}</span>
+                <div class="stat-label">Total Players</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>🏅 Rank</th>
+                        <th>👤 Player</th>
+                        <th>✅ Wins</th>
+                        <th>❌ Losses</th>
+                        <th>⭐ Points</th>
+                        <th>🎯 Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in ladderboard %}
+                    <tr>
+                        <td>
+                            <span class="rank 
+                                {% if loop.index == 1 %}rank-1
+                                {% elif loop.index == 2 %}rank-2
+                                {% elif loop.index == 3 %}rank-3
+                                {% endif %}">
+                                {% if loop.index == 1 %}🥇
+                                {% elif loop.index == 2 %}🥈
+                                {% elif loop.index == 3 %}🥉
+                                {% else %}{{ loop.index }}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="username {% if player[0] == session['username'] %}current-user{% endif %}">
+                                {{ player[0] }}
+                                {% if player[0] == session['username'] %}
+                                    <span style="margin-left: 0.5rem;"></span>
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td><span class="stats wins">{{ player[1] }}</span></td>
+                        <td><span class="stats losses">{{ player[2] }}</span></td>
+                        <td><span class="stats points">{{ player[3] }}</span></td>
+                        <td>
+                            {% if player[0] != session['username'] %}
+                                <a href="{{ url_for('challenge', opponent=player[0]) }}" class="challenge-btn">
+                                    ⚔️ Challenge
+                                </a>
+                            {% else %}
+                                <span class="no-action">That's you!</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

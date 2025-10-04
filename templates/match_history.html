@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match History - WCC Tennis Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: #22c55e;
+            border: 2px solid #22c55e;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 30px;
+        }
+
+        .nav-button:hover {
+            background: #22c55e;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 15px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        th {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #000;
+            font-weight: 700;
+            padding: 18px 15px;
+            text-align: center;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 16px 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        tr:hover {
+            background: rgba(34, 197, 94, 0.1);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .winner {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .score {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #fbbf24;
+        }
+
+        .date {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #22c55e;
+            display: block;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a0a0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #22c55e;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .table-container {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Match History</h1>
+            <p class="subtitle">Track your tennis journey</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{{ url_for('dashboard') }}" class="nav-button">
+                🏠 Back to Dashboard
+            </a>
+        </div>
+
+        {% if matches %}
+        <div class="stats-grid">
+            {% set total_matches = matches|length %}
+            {% set wins = matches|selectattr('2', 'equalto', session['username'])|list|length %}
+            {% set losses = total_matches - wins %}
+            
+            <div class="stat-card">
+                <span class="stat-number">{{ total_matches }}</span>
+                <div class="stat-label">Total Matches</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ wins }}</span>
+                <div class="stat-label">Wins</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ losses }}</span>
+                <div class="stat-label">Losses</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ "%.1f"|format((wins / total_matches * 100) if total_matches > 0 else 0) }}%</span>
+                <div class="stat-label">Win Rate</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🎾 Challenger</th>
+                            <th>🎯 Opponent</th>
+                            <th>🏆 Winner</th>
+                            <th>📊 Score</th>
+                            <th>📅 Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for match in matches %}
+                        <tr>
+                            <td>{{ match[0] }}</td>
+                            <td>{{ match[1] }}</td>
+                            <td class="winner">{{ match[2] }}</td>
+                            <td class="score">{{ match[3] }}</td>
+                            <td class="date">{{ match[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="table-container">
+            <div class="empty-state">
+                <div class="empty-icon">🎾</div>
+                <h3 style="color: #22c55e; margin-bottom: 15px;">No matches yet!</h3>
+                <p>Start challenging other players to build your match history.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

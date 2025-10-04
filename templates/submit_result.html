@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Match Result - WCC Tennis Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .opponent-name {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: #22c55e;
+            border: 2px solid #22c55e;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 20px;
+        }
+
+        .nav-button:hover {
+            background: #22c55e;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-icon {
+            text-align: center;
+            font-size: 3rem;
+            color: #22c55e;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #22c55e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 15px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #22c55e;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 10px;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon::before {
+            content: "🏆";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+
+        .input-icon select {
+            padding-left: 45px;
+        }
+
+        .score-input::before {
+            content: "📊";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+
+        .score-input input {
+            padding-left: 45px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+            background: linear-gradient(135deg, #16a34a, #15803d);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .score-examples {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            font-style: italic;
+        }
+
+        .match-info {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .match-title {
+            color: #22c55e;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .vs-text {
+            font-size: 2rem;
+            color: #a0a0a0;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .submit-btn {
+                padding: 16px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{{ url_for('dashboard') }}" class="nav-button">
+                ← Back to Dashboard
+            </a>
+            
+            <h1>🎾 Submit Match Result</h1>
+            <p class="subtitle">Record your tennis match outcome</p>
+        </div>
+
+        <div class="match-info">
+            <div class="match-title">Championship Match</div>
+            <div>
+                <strong>{{ session['username'] }}</strong>
+                <div class="vs-text">VS</div>
+                <strong class="opponent-name">{{ opponent }}</strong>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <div class="form-icon">🏆</div>
+            
+            <form method="POST">
+                <div class="form-group">
+                    <label for="winner">🏆 Match Winner</label>
+                    <div class="input-icon">
+                        <select name="winner" id="winner" required>
+                            <option value="">Select the winner...</option>
+                            <option value="{{ session['username'] }}">{{ session['username'] }} (You)</option>
+                            <option value="{{ opponent }}">{{ opponent }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="score">📊 Final Score</label>
+                    <div class="input-icon score-input">
+                        <input type="text" name="score" id="score" placeholder="e.g., 6-4, 6-3" required>
+                    </div>
+                    <div class="score-examples">
+                        Examples: "6-4, 6-2" • "7-6, 3-6, 6-4" • "6-0, 6-1"
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    🎯 Submit Match Result
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
